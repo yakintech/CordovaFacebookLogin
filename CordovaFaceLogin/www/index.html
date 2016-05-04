@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <!--
+        Customize the content security policy in the meta tag below as needed. Add 'unsafe-inline' to default-src to enable inline JavaScript.
+        For details, see http://go.microsoft.com/fwlink/?LinkID=617521
+    -->
+
+        
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <script src="scripts/openfb.js"></script>
+        <title>CordovaFaceLogin</title>
+    </head>
+    <body>
+        <button class="btn btn-block" onclick="login()">Login with Facebook</button>
+
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="scripts/platformOverrides.js"></script>
+        <script type="text/javascript" src="scripts/index.js"></script>
+    </body>
+</html>
+<script>
+    // Defaults to sessionStorage for storing the Facebook token
+    openFB.init({ appId: '365743910258892' });
+
+
+    function login() {
+        openFB.login(
+                function (response) {
+                    if (response.status === 'connected') {
+                        alert('Facebook login succeeded, got access token: ' + response.authResponse.accessToken);
+                    } else {
+                        alert('Facebook login failed: ' + response.error);
+                    }
+                }, { scope: 'email,read_stream,publish_actions' });
+    }
+
+    function getInfo() {
+        openFB.api({
+            path: '/me',
+            success: function (data) {
+                console.log(JSON.stringify(data));
+                document.getElementById("userName").innerHTML = data.name;
+                document.getElementById("userPic").src = 'http://graph.facebook.com/' + data.id + '/picture?type=small';
+            },
+            error: errorHandler
+        });
+    }
+
+</script>
